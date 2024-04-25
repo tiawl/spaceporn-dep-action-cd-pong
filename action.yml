@@ -10,6 +10,9 @@ inputs:
   hash:
     description: 'The zig hash of the pushed tag of the used dependency'
     required: true
+  token:
+    description: 'The github token'
+    required: true
 runs:
   using: "composite"
   steps:
@@ -43,4 +46,4 @@ runs:
         git push --force --set-upstream origin "${{ env.bot_branch }}"
         gh pr create --base "${{ env.default_branch }}" --fill --reviewer "${GITHUB_REPOSITORY_OWNER}"
       env:
-        GH_TOKEN: ${{ github.token }}
+        GH_TOKEN: ${{ inputs.token }}
