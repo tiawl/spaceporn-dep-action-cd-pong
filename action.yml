@@ -38,7 +38,14 @@ runs:
         sed -i "s@${zon_url}@${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY_OWNER}/${{ inputs.dependency }}/archive/refs/tags/${{ inputs.tag }}.tar.gz@;
                 s@${zon_hash}@${{ inputs.hash }}@" build.zig.zon
 
+    - name: Diff
+      id: diff
+      shell: ${{ env.shell }}
+      run: |
+        printf 'len=%s\n' "$(git diff HEAD --name-only | wc -l)" >> "${GITHUB_OUTPUT}"
+
     - name: Create Pull Request
+      if: ${{ steps.diff.outputs.len != '0' }}
       shell: ${{ env.shell }}
       run: |
         git add -A
