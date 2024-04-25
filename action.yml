@@ -1,0 +1,46 @@
+name: 'CD pong'
+description: 'Triggered by a CI ping event to update the build.zig.zon and make a PR'
+inputs:
+  dependency:
+    description: 'The used dependency'
+    required: true
+  tag:
+    description: 'The pushed tag of the used dependency'
+    required: true
+  hash:
+    description: 'The zig hash of the pushed tag of the used dependency'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: tiawl/spaceporn-dep-action-env@v1
+
+    - name: Setup Zig
+      uses: goto-bus-stop/setup-zig@v2.2.0
+      with:
+        version: ${{ env.zig_version }}
+
+    - name: Setup git user information
+      shell: ${{ env.shell }}
+      run: |
+        git config user.name "${{ env.gh_bot_name }}"
+        git config user.email "${{ env.gh_bot_email }}"
+        git checkout -b "${{ env.bot_branch }}"
+
+    - name: Update the build.zig.zon
+      shell: ${{ env.shell }}
+      run: |
+        zon_url="$(grep -o "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY_OWNER}/${{ inputs.dependency }}/archive/.*\.tar\.gz" build.zig.zon)"
+        zon_hash="$(zig fetch "${zon_url}")"
+        sed -i "s@${zon_url}@${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY_OWNER}/${{ inputs.dependency }}/archive/refs/tags/${{ inputs.tag }}.tar.gz@;
+                s@${zon_hash}@${{ inputs.hash }}@" build.zig.zon
+
+    - name: Create Pull Request
+      shell: ${{ env.shell }}
+      run: |
+        git add -A
+        git commit -m "CD: ${{ env.gh_bot_pr_title }}"
+        git push --force --set-upstream origin "${{ env.bot_branch }}"
+        gh pr create --base "${{ env.default_branch }}" --fill --reviewer "${GITHUB_REPOSITORY_OWNER}"
+      env:
+        GH_TOKEN: ${{ github.token }}
