@@ -24,7 +24,7 @@ runs:
         fetch-tags: true
     - uses: tiawl/spaceporn-dep-action-env@v1
     - uses: goto-bus-stop/setup-zig@v2.2.0
-      if: inputs.is_composite == 'true'
+      if: inputs.is_composite != 'true'
       with:
         version: ${{ env.zig_version }}
 
