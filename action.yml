@@ -69,7 +69,7 @@ runs:
       env:
         BRANCH: "${{ env.bot_branch }}"
         DEFAULT: "${{ env.default_branch }}"
-        GH_TOKEN: "${{ inputs.token }}"
+        GH_TOKEN: ${{ inputs.token }}
         TITLE: "${{ env.gh_bot_pr_title }}"
       shell: ${{ env.shell }}
       run: |
