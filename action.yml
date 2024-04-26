@@ -1,5 +1,5 @@
 name: 'CD pong'
-description: 'Triggered by a CI ping event to update the build.zig.zon and make a PR'
+description: 'Triggered by a CI ping event to update dependencies and make a PR'
 inputs:
   dependency:
     description: 'The used dependency'
@@ -18,39 +18,62 @@ runs:
   steps:
     - uses: tiawl/spaceporn-dep-action-env@v1
 
+    - name: Setup git user information
+      env:
+        BRANCH: "${{ env.bot_branch }}"
+        EMAIL: "${{ env.gh_bot_email }}"
+        NAME: "${{ env.gh_bot_name }}"
+      shell: ${{ env.shell }}
+      run: |
+        git config user.name "${NAME}"
+        git config user.email "${EMAIL}"
+        git checkout -b "${BRANCH}"
+
+    - name: Update workflows directory
+      if: inputs.hash == ''
+      env:
+        REPOSITORY: "${{ github.repository_owner }}/${{ inputs.dependency }}"
+        TAG: "${{ inputs.tag }}"
+      shell: ${{ env.shell }}
+      run: |
+        find .github -type f -exec sed -i "s#uses:\s*${REPOSITORY}@.\+#uses: ${REPOSITORY}@${TAG}#g" {} +
+
     - name: Setup Zig
+      if: inputs.hash != ''
       uses: goto-bus-stop/setup-zig@v2.2.0
       with:
         version: ${{ env.zig_version }}
 
-    - name: Setup git user information
-      shell: ${{ env.shell }}
-      run: |
-        git config user.name "${{ env.gh_bot_name }}"
-        git config user.email "${{ env.gh_bot_email }}"
-        git checkout -b "${{ env.bot_branch }}"
-
     - name: Update the build.zig.zon
+      if: inputs.hash != ''
+      env:
+        URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.dependency }}/archive"
+        TAG: "${{ inputs.tag }}"
+        HASH: "${{ inputs.hash }}"
       shell: ${{ env.shell }}
       run: |
-        zon_url="$(grep -o "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY_OWNER}/${{ inputs.dependency }}/archive/.*\.tar\.gz" build.zig.zon)"
+        zon_url="$(grep -o "${URL}/.*\.tar\.gz" build.zig.zon)"
         zon_hash="$(zig fetch "${zon_url}")"
-        sed -i "s@${zon_url}@${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY_OWNER}/${{ inputs.dependency }}/archive/refs/tags/${{ inputs.tag }}.tar.gz@;
-                s@${zon_hash}@${{ inputs.hash }}@" build.zig.zon
+        sed -i "s@${zon_url}@${URL}/refs/tags/${TAG}.tar.gz@;
+                s@${zon_hash}@${HASH}@" build.zig.zon
 
     - name: Diff
       id: diff
       shell: ${{ env.shell }}
       run: |
-        printf 'len=%s\n' "$(git diff HEAD --name-only | wc -l)" >> "${GITHUB_OUTPUT}"
+        diffs="$(git diff HEAD --name-only | wc -l)"
+        printf 'len=%s\n' "${diffs}" >> "${GITHUB_OUTPUT}"
 
     - name: Create Pull Request
-      if: ${{ steps.diff.outputs.len != '0' }}
+      if: steps.diff.outputs.len != '0'
+      env:
+        BRANCH: "${{ env.bot_branch }}"
+        DEFAULT: "${{ env.default_branch }}"
+        GH_TOKEN: "${{ inputs.token }}"
+        TITLE: "${{ env.gh_bot_pr_title }}"
       shell: ${{ env.shell }}
       run: |
         git add -A
-        git commit -m "CD: ${{ env.gh_bot_pr_title }}"
-        git push --force --set-upstream origin "${{ env.bot_branch }}"
-        gh pr create --base "${{ env.default_branch }}" --fill --reviewer "${GITHUB_REPOSITORY_OWNER}"
-      env:
-        GH_TOKEN: ${{ inputs.token }}
+        git commit -m "CD: ${TITLE}"
+        git push --force --set-upstream origin "${BRANCH}"
+        gh pr create --base "${DEFAULT}" --fill --reviewer "${GITHUB_REPOSITORY_OWNER}"
