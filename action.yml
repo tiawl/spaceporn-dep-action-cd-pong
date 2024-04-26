@@ -29,14 +29,14 @@ runs:
         git config user.email "${EMAIL}"
         git checkout -b "${BRANCH}"
 
-    - name: Update workflows directory
+    - name: Update github actions files
       if: inputs.hash == ''
       env:
         REPOSITORY: "${{ github.repository_owner }}/${{ inputs.dependency }}"
         TAG: "${{ inputs.tag }}"
       shell: ${{ env.shell }}
       run: |
-        find .github -type f -exec sed -i "s#uses:\s*${REPOSITORY}@.\+#uses: ${REPOSITORY}@${TAG}#g" {} +
+        find . -type f -name '*.yml' -exec sed -i "s#uses:\s*${REPOSITORY}@.\+#uses: ${REPOSITORY}@${TAG}#g" {} +
 
     - name: Setup Zig
       if: inputs.hash != ''
