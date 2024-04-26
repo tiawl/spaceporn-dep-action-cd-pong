@@ -29,6 +29,7 @@ jobs:
         dependency: 'toolbox'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
+    - uses: actions/checkout@v4
   test-vulkan:
     permissions:
       contents: write
@@ -45,6 +46,7 @@ jobs:
         dependency: 'vulkan.zig'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
+    - uses: actions/checkout@v4
   test-wayland:
     permissions:
       contents: write
@@ -61,6 +63,7 @@ jobs:
         dependency: 'wayland.zig'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
+    - uses: actions/checkout@v4
   test-X11:
     permissions:
       contents: write
@@ -77,6 +80,7 @@ jobs:
         dependency: 'X11.zig'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
+    - uses: actions/checkout@v4
   test-glfw:
     permissions:
       contents: write
@@ -93,6 +97,7 @@ jobs:
         dependency: 'glfw.zig'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
+    - uses: actions/checkout@v4
   test-cimgui:
     permissions:
       contents: write
@@ -109,6 +114,7 @@ jobs:
         dependency: 'cimgui.zig'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
+    - uses: actions/checkout@v4
   test-spirv:
     permissions:
       contents: write
@@ -125,6 +131,7 @@ jobs:
         dependency: 'spirv.zig'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
+    - uses: actions/checkout@v4
   test-glslang:
     permissions:
       contents: write
@@ -141,6 +148,7 @@ jobs:
         dependency: 'glslang.zig'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
+    - uses: actions/checkout@v4
   test-shaderc:
     permissions:
       contents: write
@@ -157,6 +165,7 @@ jobs:
         dependency: 'shaderc.zig'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
+    - uses: actions/checkout@v4
   test-env-action:
     permissions:
       contents: write
@@ -177,6 +186,7 @@ jobs:
         dependency: 'spaceporn-dep-action-env'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
+    - uses: actions/checkout@v4
   test-bot-action:
     permissions:
       contents: write
@@ -200,6 +210,7 @@ jobs:
         dependency: 'spaceporn-dep-action-bot'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
+    - uses: actions/checkout@v4
   test-ci-action:
     permissions:
       contents: write
@@ -224,6 +235,7 @@ jobs:
         dependency: 'spaceporn-dep-action-ci'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
+    - uses: actions/checkout@v4
   test-ping-action:
     permissions:
       contents: write
@@ -253,6 +265,7 @@ jobs:
         dependency: 'spaceporn-dep-action-cd-ping'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
+    - uses: actions/checkout@v4
   test-pong-action:
     permissions:
       contents: write
@@ -283,3 +296,4 @@ jobs:
         dependency: 'spaceporn-dep-action-cd-pong'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
+    - uses: actions/checkout@v4
