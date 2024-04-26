@@ -19,11 +19,11 @@ runs:
     - uses: tiawl/spaceporn-dep-action-env@v1
 
     - name: Setup git user information
-      shell: ${{ env.shell }}
       env:
         BRANCH: "${{ env.bot_branch }}"
         EMAIL: "${{ env.gh_bot_email }}"
         NAME: "${{ env.gh_bot_name }}"
+      shell: ${{ env.shell }}
       run: |
         git config user.name "${NAME}"
         git config user.email "${EMAIL}"
@@ -31,10 +31,10 @@ runs:
 
     - name: Update workflows directory
       if: inputs.hash == ''
-      shell: ${{ env.shell }}
       env:
         REPOSITORY: "${{ github.repository_owner }}/${{ inputs.dependency }}"
         TAG: "${{ inputs.tag }}"
+      shell: ${{ env.shell }}
       run: |
         find .github -type f -exec sed -i "s#uses:\s*${REPOSITORY}@.\+#uses: ${REPOSITORY}@${TAG}#g" {} +
 
@@ -46,11 +46,11 @@ runs:
 
     - name: Update the build.zig.zon
       if: inputs.hash != ''
-      shell: ${{ env.shell }}
       env:
         URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.dependency }}/archive"
         TAG: "${{ inputs.tag }}"
         HASH: "${{ inputs.hash }}"
+      shell: ${{ env.shell }}
       run: |
         zon_url="$(grep -o "${URL}/.*\.tar\.gz" build.zig.zon)"
         zon_hash="$(zig fetch "${zon_url}")"
