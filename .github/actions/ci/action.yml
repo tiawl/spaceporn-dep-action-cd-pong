@@ -25,6 +25,7 @@ runs:
 
     - name: Prepare CD
       id: prepare
+      shell: bash
       run: |
         tag="$(git describe --tags --abbrev=0)"
         git checkout "${tag}"
