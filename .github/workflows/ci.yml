@@ -6,73 +6,299 @@ on:
       - trunk
 
 jobs:
-  test:
+  test-toolbox:
     permissions:
       contents: write
       pull-requests: write
     strategy:
       matrix:
-        repo:
-          - dep: toolbox
-            user: vulkan.zig
-          - dep: toolbox
-            user: wayland.zig
-          - dep: toolbox
-            user: X11.zig
-          - dep: toolbox
-            user: glfw.zig
-          - dep: toolbox
-            user: cimgui.zig
-          - dep: toolbox
-            user: spirv.zig
-          - dep: toolbox
-            user: glslang.zig
-          - dep: toolbox
-            user: shaderc.zig
-          - dep: vulkan.zig
-            user: glfw.zig
-          - dep: wayland.zig
-            user: glfw.zig
-          - dep: X11.zig
-            user: glfw.zig
-          - dep: glfw.zig
-            user: cimgui.zig
-          - dep: cimgui.zig
-            user: spaceporn
-          - dep: spirv.zig
-            user: shaderc.zig
-          - dep: glslang.zig
-            user: shaderc.zig
-          - dep: shaderc.zig
-            user: spaceporn
+        user:
+          - vulkan.zig
+          - wayland.zig
+          - X11.zig
+          - glfw.zig
+          - cimgui.zig
+          - spirv.zig
+          - glslang.zig
+          - shaderc.zig
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci
       with:
-        repository: "${{ github.repository_owner }}/${{ matrix.repo.dep }}"
-        fetch-depth: 0
-        fetch-tags: true
-    - uses: tiawl/spaceporn-dep-action-env@v1
-    - uses: goto-bus-stop/setup-zig@v2.2.0
-      with:
-        version: ${{ env.zig_version }}
-
-    - name: Prepare CD
-      id: prepare
-      run: |
-        tag="$(git describe --tags --abbrev=0)"
-        git checkout "${tag}"
-        hash="$(zig fetch .)"
-        printf 'hash=%s\n' "${hash}" >> "${GITHUB_OUTPUT}"
-        printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
-
-    - uses: actions/checkout@v4
-      with:
-        repository: "${{ github.repository_owner }}/${{ matrix.repo.user }}"
-
-    - uses: tiawl/spaceporn-dep-action-cd-pong@ci
-      with:
-        dependency: "${{ matrix.repo.dep }}"
-        tag: "${{ steps.prepare.outputs.tag }}"
-        hash: "${{ steps.prepare.outputs.hash }}"
+        dependency: 'toolbox'
+        user: "${{ matrix.user }}"
         token: "${{ github.token }}"
+    - uses: actions/checkout@v4
+  test-vulkan:
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      matrix:
+        user:
+          - glfw.zig
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci
+      with:
+        dependency: 'vulkan.zig'
+        user: "${{ matrix.user }}"
+        token: "${{ github.token }}"
+    - uses: actions/checkout@v4
+  test-wayland:
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      matrix:
+        user:
+          - glfw.zig
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci
+      with:
+        dependency: 'wayland.zig'
+        user: "${{ matrix.user }}"
+        token: "${{ github.token }}"
+    - uses: actions/checkout@v4
+  test-X11:
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      matrix:
+        user:
+          - glfw.zig
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci
+      with:
+        dependency: 'X11.zig'
+        user: "${{ matrix.user }}"
+        token: "${{ github.token }}"
+    - uses: actions/checkout@v4
+  test-glfw:
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      matrix:
+        user:
+          - cimgui.zig
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci
+      with:
+        dependency: 'glfw.zig'
+        user: "${{ matrix.user }}"
+        token: "${{ github.token }}"
+    - uses: actions/checkout@v4
+  test-cimgui:
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      matrix:
+        user:
+          - spaceporn
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci
+      with:
+        dependency: 'cimgui.zig'
+        user: "${{ matrix.user }}"
+        token: "${{ github.token }}"
+    - uses: actions/checkout@v4
+  test-spirv:
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      matrix:
+        user:
+          - shaderc.zig
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci
+      with:
+        dependency: 'spirv.zig'
+        user: "${{ matrix.user }}"
+        token: "${{ github.token }}"
+    - uses: actions/checkout@v4
+  test-glslang:
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      matrix:
+        user:
+          - shaderc.zig
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci
+      with:
+        dependency: 'glslang.zig'
+        user: "${{ matrix.user }}"
+        token: "${{ github.token }}"
+    - uses: actions/checkout@v4
+  test-shaderc:
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      matrix:
+        user:
+          - spaceporn
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci
+      with:
+        dependency: 'shaderc.zig'
+        user: "${{ matrix.user }}"
+        token: "${{ github.token }}"
+    - uses: actions/checkout@v4
+  test-env-action:
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      matrix:
+        user:
+          - spaceporn-dep-action-bot
+          - spaceporn-dep-action-ci
+          - spaceporn-dep-action-cd-ping
+          - spaceporn-dep-action-cd-pong
+          - spaceporn
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci
+      with:
+        dependency: 'spaceporn-dep-action-env'
+        is_composite: 'true'
+        user: "${{ matrix.user }}"
+        token: "${{ github.token }}"
+    - uses: actions/checkout@v4
+  test-bot-action:
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      matrix:
+        user:
+          - vulkan.zig
+          - wayland.zig
+          - X11.zig
+          - glfw.zig
+          - cimgui.zig
+          - spirv.zig
+          - glslang.zig
+          - shaderc.zig
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci
+      with:
+        dependency: 'spaceporn-dep-action-bot'
+        is_composite: 'true'
+        user: "${{ matrix.user }}"
+        token: "${{ github.token }}"
+    - uses: actions/checkout@v4
+  test-ci-action:
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      matrix:
+        user:
+          - toolbox
+          - vulkan.zig
+          - wayland.zig
+          - X11.zig
+          - glfw.zig
+          - cimgui.zig
+          - spirv.zig
+          - glslang.zig
+          - shaderc.zig
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci
+      with:
+        dependency: 'spaceporn-dep-action-ci'
+        is_composite: 'true'
+        user: "${{ matrix.user }}"
+        token: "${{ github.token }}"
+    - uses: actions/checkout@v4
+  test-ping-action:
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      matrix:
+        user:
+          - toolbox
+          - vulkan.zig
+          - wayland.zig
+          - X11.zig
+          - glfw.zig
+          - cimgui.zig
+          - spirv.zig
+          - glslang.zig
+          - shaderc.zig
+          - spaceporn-dep-action-env
+          - spaceporn-dep-action-bot
+          - spaceporn-dep-action-ci
+          - spaceporn-dep-action-cd-ping
+          - spaceporn-dep-action-cd-pong
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci
+      with:
+        dependency: 'spaceporn-dep-action-cd-ping'
+        is_composite: 'true'
+        user: "${{ matrix.user }}"
+        token: "${{ github.token }}"
+    - uses: actions/checkout@v4
+  test-pong-action:
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      matrix:
+        user:
+          - toolbox
+          - vulkan.zig
+          - wayland.zig
+          - X11.zig
+          - glfw.zig
+          - cimgui.zig
+          - spirv.zig
+          - glslang.zig
+          - shaderc.zig
+          - spaceporn
+          - spaceporn-dep-action-env
+          - spaceporn-dep-action-bot
+          - spaceporn-dep-action-ci
+          - spaceporn-dep-action-cd-ping
+          - spaceporn-dep-action-cd-pong
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci
+      with:
+        dependency: 'spaceporn-dep-action-cd-pong'
+        is_composite: 'true'
+        user: "${{ matrix.user }}"
+        token: "${{ github.token }}"
+    - uses: actions/checkout@v4

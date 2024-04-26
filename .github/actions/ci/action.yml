@@ -1,0 +1,52 @@
+name: 'ci'
+description: 'Run CI test for CD ping'
+inputs:
+  dependency:
+    description: 'The used dependency'
+    required: true
+  is_composite:
+    description: 'Is this a composite action dependency ?'
+    required: false
+    default: false
+  user:
+    description: 'The User of this repository'
+    required: true
+  token:
+    description: 'The github token'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: "${{ github.repository_owner }}/${{ inputs.dependency }}"
+        fetch-depth: 0
+        fetch-tags: true
+    - uses: tiawl/spaceporn-dep-action-env@v1
+    - uses: goto-bus-stop/setup-zig@v2.2.0
+      if: inputs.is_composite != 'true'
+      with:
+        version: ${{ env.zig_version }}
+
+    - name: Prepare CD
+      id: prepare
+      env:
+        IS_COMPOSITE: "${{ inputs.is_composite }}"
+      shell: bash
+      run: |
+        tag="$(git describe --tags --abbrev=0)"
+        git checkout "${tag}"
+        hash="$(if [[ "${IS_COMPOSITE}" != 'true' ]]; then zig fetch .; fi)"
+        printf 'hash=%s\n' "${hash}" >> "${GITHUB_OUTPUT}"
+        printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
+
+    - uses: actions/checkout@v4
+      with:
+        repository: "${{ github.repository_owner }}/${{ inputs.user }}"
+
+    - uses: tiawl/spaceporn-dep-action-cd-pong@ci
+      with:
+        dependency: "${{ inputs.dependency }}"
+        tag: "${{ steps.prepare.outputs.tag }}"
+        hash: "${{ steps.prepare.outputs.hash }}"
+        token: "${{ inputs.token }}"
