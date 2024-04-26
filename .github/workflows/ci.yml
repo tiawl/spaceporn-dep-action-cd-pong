@@ -60,10 +60,11 @@ jobs:
     - name: Prepare CD
       id: prepare
       run: |
+        hash="$(zig fetch .)"
         tag="$(git describe --tags --abbrev=0)"
         git checkout "${tag}"
+        printf 'hash=%s\n' "${hash}" >> "${GITHUB_OUTPUT}"
         printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
-        printf 'hash=%s\n' "$(zig fetch .)" >> "${GITHUB_OUTPUT}"
 
     - uses: actions/checkout@v4
       with:

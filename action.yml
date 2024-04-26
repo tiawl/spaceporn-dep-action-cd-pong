@@ -20,37 +20,61 @@ runs:
 
     - name: Setup git user information
       shell: ${{ env.shell }}
+      env:
+        BRANCH: "${{ env.bot_branch }}"
+        EMAIL: "${{ env.gh_bot_email }}"
+        NAME: "${{ env.gh_bot_name }}"
       run: |
-        git config user.name "${{ env.gh_bot_name }}"
-        git config user.email "${{ env.gh_bot_email }}"
-        git checkout -b "${{ env.bot_branch }}"
+        git config user.name "${NAME}"
+        git config user.email "${EMAIL}"
+        git checkout -b "${BRANCH}"
 
-    - if: ${{ inputs.hash == '' }}
-      uses: ./actions/workflow
-      with:
-        repository: "${{ github.repository_owner }}/${{ inputs.dependency }}"
-        tag: "${{ inputs.tag }}"
+    - name: Update workflows directory
+      if: ${{ inputs.hash == '' }}
+      shell: ${{ env.shell }}
+      env:
+        REPOSITORY: "${{ github.repository_owner }}/${{ inputs.dependency }}"
+        TAG: "${{ inputs.tag }}"
+      run: |
+        find .github -type f -exec sed -i "s#uses:\s*${REPOSITORY}@.\+#uses: ${REPOSITORY}@${TAG}#g" {} +
 
-    - if: ${{ inputs.hash != '' }}
-      uses: ./actions/zig
+    - name: Setup Zig
+      if: ${{ inputs.hash != '' }}
+      uses: goto-bus-stop/setup-zig@v2.2.0
       with:
-        url: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.dependency }}/archive"
-        tag: "${{ inputs.tag }}"
-        hash: "${{ inputs.hash }}"
+        version: ${{ env.zig_version }}
+
+    - name: Update the build.zig.zon
+      if: ${{ inputs.hash != '' }}
+      shell: ${{ env.shell }}
+      env:
+        URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.dependency }}/archive"
+        TAG: "${{ inputs.tag }}"
+        HASH: "${{ inputs.hash }}"
+      run: |
+        zon_url="$(grep -o "${URL}/.*\.tar\.gz" build.zig.zon)"
+        zon_hash="$(zig fetch "${zon_url}")"
+        sed -i "s@${zon_url}@${URL}/refs/tags/${TAG}.tar.gz@;
+                s@${zon_hash}@${HASH}@" build.zig.zon
 
     - name: Diff
       id: diff
       shell: ${{ env.shell }}
       run: |
-        printf 'len=%s\n' "$(git diff HEAD --name-only | wc -l)" >> "${GITHUB_OUTPUT}"
+        diffs="$(git diff HEAD --name-only | wc -l)"
+        printf 'len=%s\n' "${diffs}" >> "${GITHUB_OUTPUT}"
 
     - name: Create Pull Request
       if: ${{ steps.diff.outputs.len != '0' }}
+      env:
+        BRANCH: "${{ env.bot_branch }}"
+        DEFAULT: "${{ env.default_branch }}"
+        TITLE: "${{ env.gh_bot_pr_title }}"
       shell: ${{ env.shell }}
       run: |
         git add -A
-        git commit -m "CD: ${{ env.gh_bot_pr_title }}"
-        git push --force --set-upstream origin "${{ env.bot_branch }}"
-        gh pr create --base "${{ env.default_branch }}" --fill --reviewer "${GITHUB_REPOSITORY_OWNER}"
+        git commit -m "CD: ${TITLE}"
+        git push --force --set-upstream origin "${BRANCH}"
+        gh pr create --base "${DEFAULT}" --fill --reviewer "${GITHUB_REPOSITORY_OWNER}"
       env:
         GH_TOKEN: ${{ inputs.token }}
