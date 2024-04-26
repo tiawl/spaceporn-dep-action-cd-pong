@@ -184,6 +184,7 @@ jobs:
     - uses: ./.github/actions/ci
       with:
         dependency: 'spaceporn-dep-action-env'
+        is_composite: 'true'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
     - uses: actions/checkout@v4
@@ -208,6 +209,7 @@ jobs:
     - uses: ./.github/actions/ci
       with:
         dependency: 'spaceporn-dep-action-bot'
+        is_composite: 'true'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
     - uses: actions/checkout@v4
@@ -233,6 +235,7 @@ jobs:
     - uses: ./.github/actions/ci
       with:
         dependency: 'spaceporn-dep-action-ci'
+        is_composite: 'true'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
     - uses: actions/checkout@v4
@@ -263,6 +266,7 @@ jobs:
     - uses: ./.github/actions/ci
       with:
         dependency: 'spaceporn-dep-action-cd-ping'
+        is_composite: 'true'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
     - uses: actions/checkout@v4
@@ -294,6 +298,7 @@ jobs:
     - uses: ./.github/actions/ci
       with:
         dependency: 'spaceporn-dep-action-cd-pong'
+        is_composite: 'true'
         user: "${{ matrix.user }}"
         token: "${{ github.token }}"
     - uses: actions/checkout@v4
