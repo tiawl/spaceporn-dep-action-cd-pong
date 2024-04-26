@@ -21,10 +21,11 @@ runs:
     - name: Setup git user information
       shell: ${{ env.shell }}
       env:
-        BRANCH: ${{ env.bot_branch }}
-        EMAIL: ${{ env.gh_bot_email }}
+        BRANCH: "${{ env.bot_branch }}"
+        EMAIL: "${{ env.gh_bot_email }}"
+        NAME: "${{ env.gh_bot_name }}"
       run: |
-        git config user.name "${{ env.gh_bot_name }}"
+        git config user.name "${NAME}"
         git config user.email "${EMAIL}"
         git checkout -b "${BRANCH}"
 
@@ -32,8 +33,8 @@ runs:
       if: inputs.hash == ''
       shell: ${{ env.shell }}
       env:
-        REPOSITORY: ${{ github.repository_owner }}/${{ inputs.dependency }}
-        TAG: ${{ inputs.tag }}
+        REPOSITORY: "${{ github.repository_owner }}/${{ inputs.dependency }}"
+        TAG: "${{ inputs.tag }}"
       run: |
         find .github -type f -exec sed -i "s#uses:\s*${REPOSITORY}@.\+#uses: ${REPOSITORY}@${TAG}#g" {} +
 
@@ -47,9 +48,9 @@ runs:
       if: inputs.hash != ''
       shell: ${{ env.shell }}
       env:
-        URL: ${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.dependency }}/archive
-        TAG: ${{ inputs.tag }}
-        HASH: ${{ inputs.hash }}
+        URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.dependency }}/archive"
+        TAG: "${{ inputs.tag }}"
+        HASH: "${{ inputs.hash }}"
       run: |
         zon_url="$(grep -o "${URL}/.*\.tar\.gz" build.zig.zon)"
         zon_hash="$(zig fetch "${zon_url}")"
@@ -66,10 +67,10 @@ runs:
     - name: Create Pull Request
       if: steps.diff.outputs.len != '0'
       env:
-        BRANCH: ${{ env.bot_branch }}
-        DEFAULT: ${{ env.default_branch }}
-        GH_TOKEN: ${{ inputs.token }}
-        TITLE: ${{ env.gh_bot_pr_title }}
+        BRANCH: "${{ env.bot_branch }}"
+        DEFAULT: "${{ env.default_branch }}"
+        GH_TOKEN: "${{ inputs.token }}"
+        TITLE: "${{ env.gh_bot_pr_title }}"
       shell: ${{ env.shell }}
       run: |
         git add -A
