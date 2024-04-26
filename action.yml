@@ -23,9 +23,8 @@ runs:
       env:
         BRANCH: ${{ env.bot_branch }}
         EMAIL: ${{ env.gh_bot_email }}
-        NAME: ${{ env.gh_bot_name }}
       run: |
-        git config user.name "${NAME}"
+        git config user.name "${{ env.gh_bot_name }}"
         git config user.email "${EMAIL}"
         git checkout -b "${BRANCH}"
 
