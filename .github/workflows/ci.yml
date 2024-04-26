@@ -1,0 +1,77 @@
+name: ci
+
+on:
+  pull_request:
+    branches:
+      - trunk
+
+jobs:
+  test:
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      matrix:
+        repo:
+          - dep: toolbox
+            user: vulkan.zig
+          - dep: toolbox
+            user: wayland.zig
+          - dep: toolbox
+            user: X11.zig
+          - dep: toolbox
+            user: glfw.zig
+          - dep: toolbox
+            user: cimgui.zig
+          - dep: toolbox
+            user: spirv.zig
+          - dep: toolbox
+            user: glslang.zig
+          - dep: toolbox
+            user: shaderc.zig
+          - dep: vulkan.zig
+            user: glfw.zig
+          - dep: wayland.zig
+            user: glfw.zig
+          - dep: X11.zig
+            user: glfw.zig
+          - dep: glfw.zig
+            user: cimgui.zig
+          - dep: cimgui.zig
+            user: spaceporn
+          - dep: spirv.zig
+            user: shaderc.zig
+          - dep: glslang.zig
+            user: shaderc.zig
+          - dep: shaderc.zig
+            user: spaceporn
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: "${{ github.repository_owner }}/${{ matrix.repo.dep }}"
+        fetch-depth: 0
+        fetch-tags: true
+    - uses: tiawl/spaceporn-dep-action-env@v1
+    - uses: goto-bus-stop/setup-zig@v2.2.0
+      with:
+        version: ${{ env.zig_version }}
+
+    - name: Prepare CD
+      id: prepare
+      run: |
+        tag="$(git describe --tags --abbrev=0)"
+        git checkout "${tag}"
+        printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
+        printf 'hash=%s\n' "$(zig fetch .)" >> "${GITHUB_OUTPUT}"
+
+    - uses: actions/checkout@v4
+      with:
+        repository: "${{ github.repository_owner }}/${{ matrix.repo.user }}"
+
+    - uses: tiawl/spaceporn-dep-action-cd-pong@ci
+      with:
+        dependency: "${{ matrix.repo.dep }}"
+        tag: "${{ steps.prepare.outputs.tag }}"
+        hash: "${{ steps.prepare.outputs.hash }}"
+        token: "${{ github.token }}"
