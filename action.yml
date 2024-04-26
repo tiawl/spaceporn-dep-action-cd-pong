@@ -21,36 +21,36 @@ runs:
     - name: Setup git user information
       shell: ${{ env.shell }}
       env:
-        BRANCH: "${{ env.bot_branch }}"
-        EMAIL: "${{ env.gh_bot_email }}"
-        NAME: "${{ env.gh_bot_name }}"
+        BRANCH: ${{ env.bot_branch }}
+        EMAIL: ${{ env.gh_bot_email }}
+        NAME: ${{ env.gh_bot_name }}
       run: |
         git config user.name "${NAME}"
         git config user.email "${EMAIL}"
         git checkout -b "${BRANCH}"
 
     - name: Update workflows directory
-      if: ${{ inputs.hash == '' }}
+      if: inputs.hash == ''
       shell: ${{ env.shell }}
       env:
-        REPOSITORY: "${{ github.repository_owner }}/${{ inputs.dependency }}"
-        TAG: "${{ inputs.tag }}"
+        REPOSITORY: ${{ github.repository_owner }}/${{ inputs.dependency }}
+        TAG: ${{ inputs.tag }}
       run: |
         find .github -type f -exec sed -i "s#uses:\s*${REPOSITORY}@.\+#uses: ${REPOSITORY}@${TAG}#g" {} +
 
     - name: Setup Zig
-      if: ${{ inputs.hash != '' }}
+      if: inputs.hash != ''
       uses: goto-bus-stop/setup-zig@v2.2.0
       with:
         version: ${{ env.zig_version }}
 
     - name: Update the build.zig.zon
-      if: ${{ inputs.hash != '' }}
+      if: inputs.hash != ''
       shell: ${{ env.shell }}
       env:
-        URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.dependency }}/archive"
-        TAG: "${{ inputs.tag }}"
-        HASH: "${{ inputs.hash }}"
+        URL: ${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.dependency }}/archive
+        TAG: ${{ inputs.tag }}
+        HASH: ${{ inputs.hash }}
       run: |
         zon_url="$(grep -o "${URL}/.*\.tar\.gz" build.zig.zon)"
         zon_hash="$(zig fetch "${zon_url}")"
@@ -65,12 +65,12 @@ runs:
         printf 'len=%s\n' "${diffs}" >> "${GITHUB_OUTPUT}"
 
     - name: Create Pull Request
-      if: ${{ steps.diff.outputs.len != '0' }}
+      if: steps.diff.outputs.len != '0'
       env:
-        BRANCH: "${{ env.bot_branch }}"
-        DEFAULT: "${{ env.default_branch }}"
+        BRANCH: ${{ env.bot_branch }}
+        DEFAULT: ${{ env.default_branch }}
         GH_TOKEN: ${{ inputs.token }}
-        TITLE: "${{ env.gh_bot_pr_title }}"
+        TITLE: ${{ env.gh_bot_pr_title }}
       shell: ${{ env.shell }}
       run: |
         git add -A
