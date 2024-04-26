@@ -69,6 +69,7 @@ runs:
       env:
         BRANCH: "${{ env.bot_branch }}"
         DEFAULT: "${{ env.default_branch }}"
+        GH_TOKEN: "${{ inputs.token }}"
         TITLE: "${{ env.gh_bot_pr_title }}"
       shell: ${{ env.shell }}
       run: |
@@ -76,5 +77,3 @@ runs:
         git commit -m "CD: ${TITLE}"
         git push --force --set-upstream origin "${BRANCH}"
         gh pr create --base "${DEFAULT}" --fill --reviewer "${GITHUB_REPOSITORY_OWNER}"
-      env:
-        GH_TOKEN: ${{ inputs.token }}
