@@ -1,5 +1,5 @@
 name: 'CD pong'
-description: 'Triggered by a CI ping event to update the build.zig.zon and make a PR'
+description: 'Triggered by a CI ping event to update dependencies and make a PR'
 inputs:
   dependency:
     description: 'The used dependency'
@@ -18,11 +18,6 @@ runs:
   steps:
     - uses: tiawl/spaceporn-dep-action-env@v1
 
-    - name: Setup Zig
-      uses: goto-bus-stop/setup-zig@v2.2.0
-      with:
-        version: ${{ env.zig_version }}
-
     - name: Setup git user information
       shell: ${{ env.shell }}
       run: |
@@ -30,13 +25,18 @@ runs:
         git config user.email "${{ env.gh_bot_email }}"
         git checkout -b "${{ env.bot_branch }}"
 
-    - name: Update the build.zig.zon
-      shell: ${{ env.shell }}
-      run: |
-        zon_url="$(grep -o "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY_OWNER}/${{ inputs.dependency }}/archive/.*\.tar\.gz" build.zig.zon)"
-        zon_hash="$(zig fetch "${zon_url}")"
-        sed -i "s@${zon_url}@${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY_OWNER}/${{ inputs.dependency }}/archive/refs/tags/${{ inputs.tag }}.tar.gz@;
-                s@${zon_hash}@${{ inputs.hash }}@" build.zig.zon
+    - if: ${{ inputs.hash == '' }}
+      uses: ./actions/workflow
+      with:
+        repository: "${{ github.repository_owner }}/${{ inputs.dependency }}"
+        tag: "${{ inputs.tag }}"
+
+    - if: ${{ inputs.hash != '' }}
+      uses: ./actions/zig
+      with:
+        url: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.dependency }}/archive"
+        tag: "${{ inputs.tag }}"
+        hash: "${{ inputs.hash }}"
 
     - name: Diff
       id: diff

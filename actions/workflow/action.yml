@@ -1,0 +1,16 @@
+name: 'CD pong for workflows'
+description: 'Update the workflows before making a PR'
+inputs:
+  repository:
+    description: 'The workflow repository'
+    required: true
+  tag:
+    description: 'The pushed tag of the used dependency'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Update the build.zig.zon
+      shell: ${{ env.shell }}
+      run: |
+        find .github -type f -exec sed -i "s#uses:\s*${r}@.*#uses: ${{ inputs.repository }}@${{ inputs.tag }}#g" {} +
