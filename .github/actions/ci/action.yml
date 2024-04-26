@@ -36,7 +36,7 @@ runs:
       run: |
         tag="$(git describe --tags --abbrev=0)"
         git checkout "${tag}"
-        hash="$(if [[ "${IS_COMPOSITE}" == 'true' ]]; then zig fetch .; fi)"
+        hash="$(if [[ "${IS_COMPOSITE}" != 'true' ]]; then zig fetch .; fi)"
         printf 'hash=%s\n' "${hash}" >> "${GITHUB_OUTPUT}"
         printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
 
