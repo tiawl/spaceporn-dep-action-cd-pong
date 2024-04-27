@@ -19,10 +19,23 @@ runs:
   steps:
     - uses: actions/checkout@v4
       with:
+        repository: "${{ github.repository_owner }}/${{ inputs.user }}"
+
+    - name: Search current tag selected by user
+      id: used
+      env:
+        DEPENDENCY: "${{ github.repository_owner }}/${{ inputs.dependency }}"
+      shell: bash
+      run: |
+        tag="$(grep -h -o -R "${DEPENDENCY}@v\S\+" | sed "s#^${DEPENDENCY}@##" | sort -u || :)"
+        printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
+
+    - uses: actions/checkout@v4
+      with:
         repository: "${{ github.repository_owner }}/${{ inputs.dependency }}"
         fetch-depth: 0
         fetch-tags: true
-    - uses: tiawl/spaceporn-dep-action-env@v1
+    - uses: tiawl/spaceporn-dep-action-env@v1.0.0
     - uses: goto-bus-stop/setup-zig@v2.2.0
       if: inputs.is_composite != 'true'
       with:
@@ -32,17 +45,21 @@ runs:
       id: prepare
       env:
         IS_COMPOSITE: "${{ inputs.is_composite }}"
+        USED: "${{ steps.used.outputs.tag }}"
       shell: bash
       run: |
-        tag="$(git describe --tags --abbrev=0)"
-        git checkout "${tag}"
+        tags="$(git tag --points-at "$(git describe --tags --abbrev=0 2> /dev/null)" 2> /dev/null | wc -l || :)"
+        if [[ -z "${tags}" || "${tags}" == '0' ]]; then tag='0.0.0'
+        elif [[ "${tags}" == '1' ]]; then tag="$(git describe --tags --abbrev=0)"; fi
+        git show-ref --tags "${tag:-"${USED}"}" --quiet && git checkout "${tag:-"${USED}"}"
         hash="$(if [[ "${IS_COMPOSITE}" != 'true' ]]; then zig fetch .; fi)"
         printf 'hash=%s\n' "${hash}" >> "${GITHUB_OUTPUT}"
-        printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
+        printf 'tag=%s\n' "${tag:-"${USED}"}" >> "${GITHUB_OUTPUT}"
 
     - uses: actions/checkout@v4
       with:
         repository: "${{ github.repository_owner }}/${{ inputs.user }}"
+        token: "${{ inputs.token }}"
 
     - uses: tiawl/spaceporn-dep-action-cd-pong@bot
       with:
