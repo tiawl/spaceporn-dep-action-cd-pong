@@ -44,7 +44,7 @@ runs:
       with:
         repository: "${{ github.repository_owner }}/${{ inputs.user }}"
 
-    - uses: tiawl/spaceporn-dep-action-cd-pong@ci
+    - uses: tiawl/spaceporn-dep-action-cd-pong@bot
       with:
         dependency: "${{ inputs.dependency }}"
         tag: "${{ steps.prepare.outputs.tag }}"
