@@ -28,7 +28,7 @@ jobs:
       with:
         dependency: 'toolbox'
         user: "${{ matrix.user }}"
-        token: "${{ github.token }}"
+        token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-vulkan:
     permissions:
@@ -45,7 +45,7 @@ jobs:
       with:
         dependency: 'vulkan.zig'
         user: "${{ matrix.user }}"
-        token: "${{ github.token }}"
+        token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-wayland:
     permissions:
@@ -62,7 +62,7 @@ jobs:
       with:
         dependency: 'wayland.zig'
         user: "${{ matrix.user }}"
-        token: "${{ github.token }}"
+        token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-X11:
     permissions:
@@ -79,7 +79,7 @@ jobs:
       with:
         dependency: 'X11.zig'
         user: "${{ matrix.user }}"
-        token: "${{ github.token }}"
+        token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-glfw:
     permissions:
@@ -96,7 +96,7 @@ jobs:
       with:
         dependency: 'glfw.zig'
         user: "${{ matrix.user }}"
-        token: "${{ github.token }}"
+        token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-cimgui:
     permissions:
@@ -113,7 +113,7 @@ jobs:
       with:
         dependency: 'cimgui.zig'
         user: "${{ matrix.user }}"
-        token: "${{ github.token }}"
+        token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-spirv:
     permissions:
@@ -130,7 +130,7 @@ jobs:
       with:
         dependency: 'spirv.zig'
         user: "${{ matrix.user }}"
-        token: "${{ github.token }}"
+        token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-glslang:
     permissions:
@@ -147,7 +147,7 @@ jobs:
       with:
         dependency: 'glslang.zig'
         user: "${{ matrix.user }}"
-        token: "${{ github.token }}"
+        token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-shaderc:
     permissions:
@@ -164,7 +164,7 @@ jobs:
       with:
         dependency: 'shaderc.zig'
         user: "${{ matrix.user }}"
-        token: "${{ github.token }}"
+        token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-env-action:
     permissions:
@@ -186,7 +186,7 @@ jobs:
         dependency: 'spaceporn-dep-action-env'
         is_composite: 'true'
         user: "${{ matrix.user }}"
-        token: "${{ github.token }}"
+        token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-bot-action:
     permissions:
@@ -211,7 +211,7 @@ jobs:
         dependency: 'spaceporn-dep-action-bot'
         is_composite: 'true'
         user: "${{ matrix.user }}"
-        token: "${{ github.token }}"
+        token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-ci-action:
     permissions:
@@ -237,7 +237,7 @@ jobs:
         dependency: 'spaceporn-dep-action-ci'
         is_composite: 'true'
         user: "${{ matrix.user }}"
-        token: "${{ github.token }}"
+        token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-ping-action:
     permissions:
@@ -268,7 +268,7 @@ jobs:
         dependency: 'spaceporn-dep-action-cd-ping'
         is_composite: 'true'
         user: "${{ matrix.user }}"
-        token: "${{ github.token }}"
+        token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-pong-action:
     permissions:
@@ -300,5 +300,5 @@ jobs:
         dependency: 'spaceporn-dep-action-cd-pong'
         is_composite: 'true'
         user: "${{ matrix.user }}"
-        token: "${{ github.token }}"
+        token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
