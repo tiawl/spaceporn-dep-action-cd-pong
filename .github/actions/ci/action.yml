@@ -17,6 +17,12 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - uses: tiawl/spaceporn-dep-action-env@v1.0.0
+    - uses: goto-bus-stop/setup-zig@v2.2.0
+      if: inputs.is_composite != 'true'
+      with:
+        version: ${{ env.zig_version }}
+
     - uses: actions/checkout@v4
       with:
         repository: "${{ github.repository_owner }}/${{ inputs.user }}"
@@ -35,11 +41,6 @@ runs:
         repository: "${{ github.repository_owner }}/${{ inputs.dependency }}"
         fetch-depth: 0
         fetch-tags: true
-    - uses: tiawl/spaceporn-dep-action-env@v1.0.0
-    - uses: goto-bus-stop/setup-zig@v2.2.0
-      if: inputs.is_composite != 'true'
-      with:
-        version: ${{ env.zig_version }}
 
     - name: Prepare CD
       id: prepare
