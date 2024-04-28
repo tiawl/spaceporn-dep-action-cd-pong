@@ -258,7 +258,6 @@ jobs:
           - spaceporn-dep-action-env
           - spaceporn-dep-action-bot
           - spaceporn-dep-action-ci
-          - spaceporn-dep-action-cd-ping
           - spaceporn-dep-action-cd-pong
     runs-on: ubuntu-latest
     steps:
@@ -291,7 +290,6 @@ jobs:
           - spaceporn-dep-action-bot
           - spaceporn-dep-action-ci
           - spaceporn-dep-action-cd-ping
-          - spaceporn-dep-action-cd-pong
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4

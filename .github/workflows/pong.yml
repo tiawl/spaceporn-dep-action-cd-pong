@@ -5,7 +5,6 @@ on:
     types:
       - ping-spaceporn-dep-action-env
       - ping-spaceporn-dep-action-cd-ping
-      - ping-spaceporn-dep-action-cd-pong
 
 jobs:
   pong:
@@ -14,10 +13,12 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-    - uses: tiawl/spaceporn-dep-action-cd-pong@v1
+    - uses: actions/checkout@v4
+    - uses: ./
       with:
         repository: "${{ github.repository }}"
         dependency: "${{ github.event.client_payload.dependency }}"
         tag: "${{ github.event.client_payload.tag }}"
         hash: "${{ github.event.client_payload.hash }}"
         token: "${{ secrets.PAT }}"
+    - uses: actions/checkout@v4
