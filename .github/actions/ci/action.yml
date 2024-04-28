@@ -7,7 +7,7 @@ inputs:
   is_composite:
     description: 'Is this a composite action dependency ?'
     required: false
-    default: false
+    default: 'false'
   user:
     description: 'The User of this repository'
     required: true
