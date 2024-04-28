@@ -57,12 +57,9 @@ runs:
         printf 'tag=%s\n' "${tag:-"${USED}"}" >> "${GITHUB_OUTPUT}"
 
     - uses: actions/checkout@v4
+    - uses: ./
       with:
         repository: "${{ github.repository_owner }}/${{ inputs.user }}"
-        token: "${{ inputs.token }}"
-
-    - uses: tiawl/spaceporn-dep-action-cd-pong@bot
-      with:
         dependency: "${{ inputs.dependency }}"
         tag: "${{ steps.prepare.outputs.tag }}"
         hash: "${{ steps.prepare.outputs.hash }}"

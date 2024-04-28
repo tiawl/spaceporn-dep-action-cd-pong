@@ -1,6 +1,9 @@
 name: 'CD pong'
 description: 'Triggered by a CI ping event to update dependencies and make a PR'
 inputs:
+  repository:
+    description: 'The repository name'
+    required: true
   dependency:
     description: 'The used dependency'
     required: true
@@ -18,19 +21,26 @@ runs:
   steps:
     - uses: tiawl/spaceporn-dep-action-env@v1.0.0
 
+    - uses: actions/checkout@v4
+      with:
+        repository: "${{ inputs.repository }}"
+        token: "${{ inputs.token }}"
+
     - name: Setup git user information
       env:
         BRANCH: "${{ env.bot_branch }}"
         EMAIL: "${{ env.gh_bot_email }}"
+        HASH: "${{ inputs.hash }}"
         NAME: "${{ env.gh_bot_name }}"
       shell: ${{ env.shell }}
       run: |
         git config user.name "${NAME}"
         git config user.email "${EMAIL}"
         git checkout -b "${BRANCH}"
+        printf 'hash_len=%s\n' "${#HASH}" >> "${GITHUB_ENV}"
 
     - name: Update github actions files
-      if: inputs.hash == ''
+      if: env.hash_len == '0'
       env:
         REPOSITORY: "${{ github.repository_owner }}/${{ inputs.dependency }}"
         TAG: "${{ inputs.tag }}"
@@ -39,13 +49,13 @@ runs:
         find . -type f -name '*.yml' -exec sed -i "s#uses:\s*${REPOSITORY}@v.\+#uses: ${REPOSITORY}@${TAG}#g" {} +
 
     - name: Setup Zig
-      if: inputs.hash != ''
+      if: env.hash_len != '0'
       uses: goto-bus-stop/setup-zig@v2.2.0
       with:
         version: ${{ env.zig_version }}
 
     - name: Update the build.zig.zon
-      if: inputs.hash != ''
+      if: env.hash_len != '0'
       env:
         URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.dependency }}/archive"
         TAG: "${{ inputs.tag }}"
