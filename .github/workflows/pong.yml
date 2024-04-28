@@ -5,7 +5,6 @@ on:
     types:
       - ping-spaceporn-dep-action-env
       - ping-spaceporn-dep-action-cd-ping
-      - ping-spaceporn-dep-action-cd-pong
 
 jobs:
   pong:
