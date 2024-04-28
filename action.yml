@@ -86,4 +86,4 @@ runs:
         git add -A
         git commit -m "CD: ${TITLE}"
         git push --force --set-upstream origin "${BRANCH}"
-        gh pr create --base "${DEFAULT}" --fill --assignee "${GITHUB_REPOSITORY_OWNER}"
+        gh pr create --base "${DEFAULT}" --title "CD: ${TITLE}" --body '' --assignee "${GITHUB_REPOSITORY_OWNER}"
