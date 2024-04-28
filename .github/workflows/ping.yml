@@ -29,7 +29,7 @@ jobs:
           - spaceporn-dep-action-cd-pong
     runs-on: ubuntu-latest
     steps:
-    - uses: tiawl/spaceporn-dep-action-cd-ping@v1.0.0
+    - uses: tiawl/spaceporn-dep-action-cd-ping@0.0.0
       with:
         repository_name: "${{ github.event.repository.name }}"
         is_composite: 'true'
