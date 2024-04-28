@@ -26,7 +26,6 @@ jobs:
           - spaceporn-dep-action-bot
           - spaceporn-dep-action-ci
           - spaceporn-dep-action-cd-ping
-          - spaceporn-dep-action-cd-pong
     runs-on: ubuntu-latest
     steps:
     - uses: tiawl/spaceporn-dep-action-cd-ping@v1.0.0
