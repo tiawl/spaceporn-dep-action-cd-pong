@@ -3,8 +3,8 @@ name: cd pong
 on:
   repository_dispatch:
     types:
-      - ping-spaceporn-dep-action-env
-      - ping-spaceporn-dep-action-cd-ping
+      - ping-spaceporn-action-env
+      - ping-spaceporn-action-cd-ping
 
 jobs:
   pong:

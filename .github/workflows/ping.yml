@@ -22,13 +22,13 @@ jobs:
           - glslang.zig
           - shaderc.zig
           - spaceporn
-          - spaceporn-dep-action-env
-          - spaceporn-dep-action-bot
-          - spaceporn-dep-action-ci
-          - spaceporn-dep-action-cd-ping
+          - spaceporn-action-env
+          - spaceporn-action-bot
+          - spaceporn-action-ci
+          - spaceporn-action-cd-ping
     runs-on: ubuntu-latest
     steps:
-    - uses: tiawl/spaceporn-dep-action-cd-ping@v1.0.0
+    - uses: tiawl/spaceporn-action-cd-ping@v1.0.0
       with:
         repository_name: "${{ github.event.repository.name }}"
         is_composite: 'true'

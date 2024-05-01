@@ -173,17 +173,17 @@ jobs:
     strategy:
       matrix:
         user:
-          - spaceporn-dep-action-bot
-          - spaceporn-dep-action-ci
-          - spaceporn-dep-action-cd-ping
-          - spaceporn-dep-action-cd-pong
+          - spaceporn-action-bot
+          - spaceporn-action-ci
+          - spaceporn-action-cd-ping
+          - spaceporn-action-cd-pong
           - spaceporn
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'spaceporn-dep-action-env'
+        dependency: 'spaceporn-action-env'
         is_composite: 'true'
         user: "${{ matrix.user }}"
         token: "${{ secrets.PAT }}"
@@ -208,7 +208,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'spaceporn-dep-action-bot'
+        dependency: 'spaceporn-action-bot'
         is_composite: 'true'
         user: "${{ matrix.user }}"
         token: "${{ secrets.PAT }}"
@@ -234,7 +234,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'spaceporn-dep-action-ci'
+        dependency: 'spaceporn-action-ci'
         is_composite: 'true'
         user: "${{ matrix.user }}"
         token: "${{ secrets.PAT }}"
@@ -255,16 +255,16 @@ jobs:
           - spirv.zig
           - glslang.zig
           - shaderc.zig
-          - spaceporn-dep-action-env
-          - spaceporn-dep-action-bot
-          - spaceporn-dep-action-ci
-          - spaceporn-dep-action-cd-pong
+          - spaceporn-action-env
+          - spaceporn-action-bot
+          - spaceporn-action-ci
+          - spaceporn-action-cd-pong
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'spaceporn-dep-action-cd-ping'
+        dependency: 'spaceporn-action-cd-ping'
         is_composite: 'true'
         user: "${{ matrix.user }}"
         token: "${{ secrets.PAT }}"
@@ -286,16 +286,16 @@ jobs:
           - glslang.zig
           - shaderc.zig
           - spaceporn
-          - spaceporn-dep-action-env
-          - spaceporn-dep-action-bot
-          - spaceporn-dep-action-ci
-          - spaceporn-dep-action-cd-ping
+          - spaceporn-action-env
+          - spaceporn-action-bot
+          - spaceporn-action-ci
+          - spaceporn-action-cd-ping
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'spaceporn-dep-action-cd-pong'
+        dependency: 'spaceporn-action-cd-pong'
         is_composite: 'true'
         user: "${{ matrix.user }}"
         token: "${{ secrets.PAT }}"
