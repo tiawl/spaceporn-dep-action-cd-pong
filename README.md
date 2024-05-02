@@ -2,9 +2,9 @@
 
 A composite action triggered on repository dispatch event. It is activated on new release notification. It parses the new release's data, update content of the repository and open a pull request.
 
-## Disclaimer
+## Important note
 
-This package is not intented to be used outside of the [tiawl/spaceporn][1] dependencies chain. For this reason, there are no contributing file/rules on this repository. However feel free to open an issue if you have a question. We will be happy to answer.
+This composite action is not intented to be used outside of the [tiawl/spaceporn][1] dependencies chain. For this reason, there are no contributing file/rules on this repository. However feel free to open an issue if you have a question. We will be happy to answer.
 
 ## CICD reminder
 
