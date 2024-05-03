@@ -1,15 +1,15 @@
 name: 'ci'
 description: 'Run CI test for CD ping'
 inputs:
-  dependency:
-    description: 'The used dependency'
+  from:
+    description: 'The ping sender'
     required: true
   is_composite:
-    description: 'Is this a composite action dependency ?'
+    description: 'Is the ping sender this a composite action ?'
     required: false
     default: 'false'
-  user:
-    description: 'The User of this repository'
+  to:
+    description: 'The ping receiver'
     required: true
   token:
     description: 'The github token'
@@ -25,20 +25,20 @@ runs:
 
     - uses: actions/checkout@v4
       with:
-        repository: "${{ github.repository_owner }}/${{ inputs.user }}"
+        repository: "${{ github.repository_owner }}/${{ inputs.to }}"
 
-    - name: Search current tag selected by user
+    - name: Search current tag selected by the ping receiver
       id: used
       env:
-        DEPENDENCY: "${{ github.repository_owner }}/${{ inputs.dependency }}"
+        FROM: "${{ github.repository_owner }}/${{ inputs.from }}"
       shell: bash
       run: |
-        tag="$(grep -h -o -R "${DEPENDENCY}@v\S\+" | sed "s#^${DEPENDENCY}@##" | sort -u || :)"
+        tag="$(grep -h -o -R "${FROM}@v\S\+" | sed "s#^${FROM}@##" | sort -u || :)"
         printf 'tag=%s\n' "${tag}" >> "${GITHUB_OUTPUT}"
 
     - uses: actions/checkout@v4
       with:
-        repository: "${{ github.repository_owner }}/${{ inputs.dependency }}"
+        repository: "${{ github.repository_owner }}/${{ inputs.from }}"
         fetch-depth: 0
         fetch-tags: true
 
@@ -46,7 +46,7 @@ runs:
       id: prepare
       env:
         IS_COMPOSITE: "${{ inputs.is_composite }}"
-        URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.dependency }}/archive/refs/tags"
+        URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.from }}/archive/refs/tags"
         USED: "${{ steps.used.outputs.tag }}"
       shell: bash
       run: |
@@ -61,8 +61,8 @@ runs:
     - uses: actions/checkout@v4
     - uses: ./
       with:
-        repository: "${{ github.repository_owner }}/${{ inputs.user }}"
-        dependency: "${{ inputs.dependency }}"
+        to: "${{ github.repository_owner }}/${{ inputs.to }}"
+        from: "${{ inputs.from }}"
         tag: "${{ steps.prepare.outputs.tag }}"
         hash: "${{ steps.prepare.outputs.hash }}"
         token: "${{ inputs.token }}"

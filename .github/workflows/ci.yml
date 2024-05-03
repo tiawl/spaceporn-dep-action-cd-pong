@@ -12,7 +12,7 @@ jobs:
       pull-requests: write
     strategy:
       matrix:
-        user:
+        to:
           - vulkan.zig
           - wayland.zig
           - X11.zig
@@ -26,8 +26,8 @@ jobs:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'toolbox'
-        user: "${{ matrix.user }}"
+        from: 'toolbox'
+        to: "${{ matrix.to }}"
         token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-vulkan:
@@ -36,15 +36,15 @@ jobs:
       pull-requests: write
     strategy:
       matrix:
-        user:
+        to:
           - glfw.zig
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'vulkan.zig'
-        user: "${{ matrix.user }}"
+        from: 'vulkan.zig'
+        to: "${{ matrix.to }}"
         token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-wayland:
@@ -53,15 +53,15 @@ jobs:
       pull-requests: write
     strategy:
       matrix:
-        user:
+        to:
           - glfw.zig
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'wayland.zig'
-        user: "${{ matrix.user }}"
+        from: 'wayland.zig'
+        to: "${{ matrix.to }}"
         token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-X11:
@@ -70,15 +70,15 @@ jobs:
       pull-requests: write
     strategy:
       matrix:
-        user:
+        to:
           - glfw.zig
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'X11.zig'
-        user: "${{ matrix.user }}"
+        from: 'X11.zig'
+        to: "${{ matrix.to }}"
         token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-glfw:
@@ -87,15 +87,15 @@ jobs:
       pull-requests: write
     strategy:
       matrix:
-        user:
+        to:
           - cimgui.zig
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'glfw.zig'
-        user: "${{ matrix.user }}"
+        from: 'glfw.zig'
+        to: "${{ matrix.to }}"
         token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-cimgui:
@@ -104,15 +104,15 @@ jobs:
       pull-requests: write
     strategy:
       matrix:
-        user:
+        to:
           - spaceporn
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'cimgui.zig'
-        user: "${{ matrix.user }}"
+        from: 'cimgui.zig'
+        to: "${{ matrix.to }}"
         token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-spirv:
@@ -121,15 +121,15 @@ jobs:
       pull-requests: write
     strategy:
       matrix:
-        user:
+        to:
           - shaderc.zig
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'spirv.zig'
-        user: "${{ matrix.user }}"
+        from: 'spirv.zig'
+        to: "${{ matrix.to }}"
         token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-glslang:
@@ -138,15 +138,15 @@ jobs:
       pull-requests: write
     strategy:
       matrix:
-        user:
+        to:
           - shaderc.zig
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'glslang.zig'
-        user: "${{ matrix.user }}"
+        from: 'glslang.zig'
+        to: "${{ matrix.to }}"
         token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-shaderc:
@@ -155,15 +155,15 @@ jobs:
       pull-requests: write
     strategy:
       matrix:
-        user:
+        to:
           - spaceporn
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'shaderc.zig'
-        user: "${{ matrix.user }}"
+        from: 'shaderc.zig'
+        to: "${{ matrix.to }}"
         token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-env-action:
@@ -172,7 +172,7 @@ jobs:
       pull-requests: write
     strategy:
       matrix:
-        user:
+        to:
           - spaceporn-action-bot
           - spaceporn-action-ci
           - spaceporn-action-cd-ping
@@ -183,9 +183,9 @@ jobs:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'spaceporn-action-env'
+        from: 'spaceporn-action-env'
         is_composite: 'true'
-        user: "${{ matrix.user }}"
+        to: "${{ matrix.to }}"
         token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-bot-action:
@@ -194,7 +194,7 @@ jobs:
       pull-requests: write
     strategy:
       matrix:
-        user:
+        to:
           - vulkan.zig
           - wayland.zig
           - X11.zig
@@ -208,9 +208,9 @@ jobs:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'spaceporn-action-bot'
+        from: 'spaceporn-action-bot'
         is_composite: 'true'
-        user: "${{ matrix.user }}"
+        to: "${{ matrix.to }}"
         token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-ci-action:
@@ -219,7 +219,7 @@ jobs:
       pull-requests: write
     strategy:
       matrix:
-        user:
+        to:
           - toolbox
           - vulkan.zig
           - wayland.zig
@@ -234,9 +234,9 @@ jobs:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'spaceporn-action-ci'
+        from: 'spaceporn-action-ci'
         is_composite: 'true'
-        user: "${{ matrix.user }}"
+        to: "${{ matrix.to }}"
         token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-ping-action:
@@ -245,7 +245,7 @@ jobs:
       pull-requests: write
     strategy:
       matrix:
-        user:
+        to:
           - toolbox
           - vulkan.zig
           - wayland.zig
@@ -264,9 +264,9 @@ jobs:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'spaceporn-action-cd-ping'
+        from: 'spaceporn-action-cd-ping'
         is_composite: 'true'
-        user: "${{ matrix.user }}"
+        to: "${{ matrix.to }}"
         token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
   test-pong-action:
@@ -275,7 +275,7 @@ jobs:
       pull-requests: write
     strategy:
       matrix:
-        user:
+        to:
           - toolbox
           - vulkan.zig
           - wayland.zig
@@ -295,8 +295,8 @@ jobs:
     - uses: actions/checkout@v4
     - uses: ./.github/actions/ci
       with:
-        dependency: 'spaceporn-action-cd-pong'
+        from: 'spaceporn-action-cd-pong'
         is_composite: 'true'
-        user: "${{ matrix.user }}"
+        to: "${{ matrix.to }}"
         token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4

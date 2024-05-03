@@ -3,8 +3,8 @@ name: cd pong
 on:
   repository_dispatch:
     types:
-      - ping-spaceporn-action-env
-      - ping-spaceporn-action-cd-ping
+      - ping-from-spaceporn-action-env
+      - ping-from-spaceporn-action-cd-ping
 
 jobs:
   pong:
@@ -16,8 +16,8 @@ jobs:
     - uses: actions/checkout@v4
     - uses: ./
       with:
-        repository: "${{ github.repository }}"
-        dependency: "${{ github.event.client_payload.dependency }}"
+        to: "${{ github.repository }}"
+        from: "${{ github.event.client_payload.from }}"
         tag: "${{ github.event.client_payload.tag }}"
         hash: "${{ github.event.client_payload.hash }}"
         token: "${{ secrets.PAT }}"
