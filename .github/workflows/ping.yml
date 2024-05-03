@@ -28,7 +28,7 @@ jobs:
           - spaceporn-action-cd-ping
     runs-on: ubuntu-latest
     steps:
-    - uses: tiawl/spaceporn-action-cd-ping@v1.0.0
+    - uses: tiawl/spaceporn-action-cd-ping@v1.0.1
       with:
         from: "${{ github.event.repository.name }}"
         is_composite: 'true'
