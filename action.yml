@@ -1,17 +1,17 @@
 name: 'CD pong'
 description: 'Triggered by a CI ping event to update dependencies and make a PR'
 inputs:
-  repository:
-    description: 'The repository name'
+  to:
+    description: 'The ping receiver'
     required: true
-  dependency:
-    description: 'The used dependency'
+  from:
+    description: 'The ping sender'
     required: true
   tag:
-    description: 'The pushed tag of the used dependency'
+    description: 'The pushed tag of the ping sender'
     required: true
   hash:
-    description: 'The zig hash of the pushed tag of the used dependency'
+    description: 'The zig hash of the pushed tag of the ping sender'
     required: true
   token:
     description: 'The github token'
@@ -23,7 +23,7 @@ runs:
 
     - uses: actions/checkout@v4
       with:
-        repository: "${{ inputs.repository }}"
+        repository: "${{ inputs.to }}"
         token: "${{ inputs.token }}"
 
     - name: Setup git user information
@@ -42,7 +42,7 @@ runs:
     - name: Update github actions files
       if: env.hash_len == '0'
       env:
-        REPOSITORY: "${{ github.repository_owner }}/${{ inputs.dependency }}"
+        REPOSITORY: "${{ github.repository_owner }}/${{ inputs.from }}"
         TAG: "${{ inputs.tag }}"
       shell: ${{ env.shell }}
       run: |
@@ -57,7 +57,7 @@ runs:
     - name: Update the build.zig.zon
       if: env.hash_len != '0'
       env:
-        URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.dependency }}/archive"
+        URL: "${{ github.server_url }}/${{ github.repository_owner }}/${{ inputs.from }}/archive"
         TAG: "${{ inputs.tag }}"
         HASH: "${{ inputs.hash }}"
       shell: ${{ env.shell }}

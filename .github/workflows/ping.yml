@@ -30,8 +30,8 @@ jobs:
     steps:
     - uses: tiawl/spaceporn-action-cd-ping@v1.0.0
       with:
-        repository_name: "${{ github.event.repository.name }}"
+        from: "${{ github.event.repository.name }}"
         is_composite: 'true'
-        user: "${{ matrix.repo }}"
+        to: "${{ matrix.repo }}"
         tag: "${{ github.ref_name }}"
         token: "${{ secrets.PAT }}"
