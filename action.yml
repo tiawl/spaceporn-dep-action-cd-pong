@@ -50,7 +50,7 @@ runs:
 
     - name: Setup Zig
       if: env.hash_len != '0'
-      uses: goto-bus-stop/setup-zig@v2.2.0
+      uses: mlugg/setup-zig@v1
       with:
         version: ${{ env.zig_version }}
 
