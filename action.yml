@@ -19,7 +19,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: tiawl/spaceporn-action-env@v1.0.2
+    - uses: tiawl/spaceporn-action-env@v1.0.3
 
     - uses: actions/checkout@v4
       with:
