@@ -21,6 +21,7 @@ jobs:
           - spirv.zig
           - glslang.zig
           - shaderc.zig
+          - oniguruma.zig
           - libjq.zig
     runs-on: ubuntu-latest
     steps:
@@ -167,6 +168,23 @@ jobs:
         to: "${{ matrix.to }}"
         token: "${{ secrets.PAT }}"
     - uses: actions/checkout@v4
+  test-oniguruma:
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      matrix:
+        to:
+          - libjq.zig
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: ./.github/actions/ci
+      with:
+        from: 'oniguruma.zig'
+        to: "${{ matrix.to }}"
+        token: "${{ secrets.PAT }}"
+    - uses: actions/checkout@v4
   test-env-action:
     permissions:
       contents: write
@@ -206,6 +224,7 @@ jobs:
           - spirv.zig
           - glslang.zig
           - shaderc.zig
+          - oniguruma.zig
           - libjq.zig
     runs-on: ubuntu-latest
     steps:
@@ -233,6 +252,7 @@ jobs:
           - spirv.zig
           - glslang.zig
           - shaderc.zig
+          - oniguruma.zig
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -259,6 +279,7 @@ jobs:
           - spirv.zig
           - glslang.zig
           - shaderc.zig
+          - oniguruma.zig
           - spaceporn-action-env
           - spaceporn-action-bot
           - spaceporn-action-ci
@@ -289,6 +310,7 @@ jobs:
           - spirv.zig
           - glslang.zig
           - shaderc.zig
+          - oniguruma.zig
           - libjq.zig
           - spaceporn
           - spaceporn-action-env
