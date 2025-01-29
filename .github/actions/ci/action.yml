@@ -17,7 +17,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: tiawl/spaceporn-action-env@v1.0.3
+    - uses: tiawl/spaceporn-action-env@v1.0.4
     - uses: mlugg/setup-zig@v1
       if: inputs.is_composite != 'true'
       with:
